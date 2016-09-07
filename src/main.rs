@@ -19,13 +19,30 @@ fn read_loop(mut conn: Client) {
             Err(_) => break,
         };
 
+        let status = match conn.status() {
+            Ok(status) => status,
+            Err(_) => break,
+        };
+
+        let playpause = match status.state {
+            mpd::status::State::Play => "Play",
+            mpd::status::State::Pause => "Pause",
+            mpd::status::State::Stop => "Stop",
+        };
+
+        let time = match status.time {
+            Some(v) => v,
+            None => break,
+        };
+
         let title = currentsong.title.unwrap_or(unavailable.clone());
         let artist = currentsong.tags.get("Artist").unwrap_or(&unavailable);
-        let status = artist.clone() + ":" + &title;
+        let notification_title = playpause.to_string() + " " + &time.0.num_seconds().to_string() + "/" + &time.1.num_seconds().to_string();
+        let body = artist.clone() + ": " + &title;
 
         for x in notify_system.unwrap() {
             if x == Subsystem::Player {
-                Notification::new().summary(&status).show().unwrap();
+                Notification::new().body(&body).appname("MPD").summary(&notification_title).show().unwrap();
             }
         }
     }
