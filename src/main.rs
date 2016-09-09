@@ -24,7 +24,7 @@ fn read_loop(mut conn: Client) {
         let unavailable = "NA".to_string();
         let nullsong = mpd::Song::default();
 
-        let notify_system = conn.wait(&[Subsystem::Player]);
+        let _ = conn.wait(&[Subsystem::Player]);
         let currentsong = match conn.currentsong() {
             Ok(song) => song.unwrap_or(nullsong),
             Err(_) => break,
@@ -51,11 +51,7 @@ fn read_loop(mut conn: Client) {
         let notification_title = playpause.to_string() + " " + &time;
         let body = artist.clone() + ": " + &title;
 
-        for x in notify_system.unwrap() {
-            if x == Subsystem::Player {
-                Notification::new().body(&body).appname("MPD").summary(&notification_title).show().unwrap();
-            }
-        }
+        Notification::new().body(&body).appname("MPD").summary(&notification_title).show().unwrap();
     }
 }
 
