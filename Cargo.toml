@@ -5,4 +5,5 @@ authors = ["Emantor <phoenix@emantor.de>"]
 
 [dependencies]
 mpd = "*"
+time = "*"
 notify-rust = "3.0"

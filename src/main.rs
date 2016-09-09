@@ -1,12 +1,23 @@
 extern crate mpd;
 extern crate notify_rust;
+extern crate time;
 
 use mpd::Client;
 use mpd::idle::Subsystem;
 use mpd::Idle;
-use std::time::Duration;
 use std::thread;
 use notify_rust::Notification;
+use time::Duration;
+
+fn calculate_disp_time(times: (Duration,Duration)) -> std::string::String {
+    let min_left = times.0.num_minutes();
+    let min_comp = times.1.num_minutes();
+    let sec_left = times.0.num_seconds() - 60 * min_left;
+    let sec_comp = times.1.num_seconds() - 60 * min_comp;
+
+    return min_left.to_string() + ":" + &format!("{:02}",sec_left) + "/" + &min_comp.to_string() + ":" + &format!("{:02}",sec_comp);
+
+}
 
 fn read_loop(mut conn: Client) {
     loop{
@@ -31,13 +42,13 @@ fn read_loop(mut conn: Client) {
         };
 
         let time = match status.time {
-            Some(v) => v,
+            Some(v) => calculate_disp_time(v),
             None => break,
         };
 
         let title = currentsong.title.unwrap_or(unavailable.clone());
         let artist = currentsong.tags.get("Artist").unwrap_or(&unavailable);
-        let notification_title = playpause.to_string() + " " + &time.0.num_seconds().to_string() + "/" + &time.1.num_seconds().to_string();
+        let notification_title = playpause.to_string() + " " + &time;
         let body = artist.clone() + ": " + &title;
 
         for x in notify_system.unwrap() {
@@ -56,6 +67,6 @@ fn main() {
             Ok(v) => read_loop(v),
             Err(t) => println!("Error: {}", t),
         }
-        thread::sleep(Duration::from_secs(5));
+        thread::sleep(std::time::Duration::from_secs(5));
     }
 }
