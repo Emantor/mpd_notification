@@ -7,6 +7,7 @@ use mpd::idle::Subsystem;
 use mpd::Idle;
 use std::thread;
 use notify_rust::Notification;
+use notify_rust::NotificationUrgency;
 use time::Duration;
 
 fn calculate_disp_time(times: (Duration,Duration)) -> std::string::String {
@@ -51,7 +52,7 @@ fn read_loop(mut conn: Client) {
         let notification_title = playpause.to_string() + " " + &time;
         let body = artist.clone() + ": " + &title;
 
-        Notification::new().body(&body).appname("MPD").summary(&notification_title).show().unwrap();
+        Notification::new().urgency(NotificationUrgency::Low).body(&body).appname("MPD").summary(&notification_title).show().unwrap();
     }
 }
 
