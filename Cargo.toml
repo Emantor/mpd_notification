@@ -4,6 +4,6 @@ version = "0.1.0"
 authors = ["Emantor <phoenix@emantor.de>"]
 
 [dependencies]
-mpd = "*"
-time = "*"
-notify-rust = "3.0"
+mpd = "0.0.11"
+time = "0.1.34"
+notify-rust = "3.2.1"
