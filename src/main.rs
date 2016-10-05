@@ -16,7 +16,7 @@ fn calculate_disp_time(times: (Duration,Duration)) -> std::string::String {
     let sec_left = times.0.num_seconds() - 60 * min_left;
     let sec_comp = times.1.num_seconds() - 60 * min_comp;
 
-    return min_left.to_string() + ":" + &format!("{:02}",sec_left) + "/" + &min_comp.to_string() + ":" + &format!("{:02}",sec_comp);
+    min_left.to_string() + ":" + &format!("{:02}",sec_left) + "/" + &min_comp.to_string() + ":" + &format!("{:02}",sec_comp)
 
 }
 
@@ -52,7 +52,7 @@ fn read_loop(mut conn: Client) {
         let notification_title = playpause.to_string() + " " + &time;
         let body = artist.clone() + ": " + &title;
 
-        Notification::new().urgency(NotificationUrgency::Low).body(&body).appname("MPD").summary(&notification_title).show().unwrap();
+        Notification::new().urgency(NotificationUrgency::Low).timeout(2).body(&body).appname("MPD").summary(&notification_title).show().unwrap();
     }
 }
 
