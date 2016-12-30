@@ -16,7 +16,7 @@ fn calculate_disp_time(times: (Duration,Duration)) -> std::string::String {
     let sec_left = times.0.num_seconds() - 60 * min_left;
     let sec_comp = times.1.num_seconds() - 60 * min_comp;
 
-    min_left.to_string() + ":" + &format!("{:02}",sec_left) + "/" + &min_comp.to_string() + ":" + &format!("{:02}",sec_comp)
+    format!("{}:{:02}/{}:{:02}", min_left, sec_left, min_comp, sec_comp)
 
 }
 
